@@ -34,9 +34,9 @@ main {
 }
 
 .back-link {
-    display: inline-block;
-    margin-left: 10px;
-    margin-bottom: 10px;
+    display: block;
+    width: fit-content;
+    margin: 20px 20px 0 auto;
     color: #75e5bd;
     font-size: 13px;
     text-decoration: none;
