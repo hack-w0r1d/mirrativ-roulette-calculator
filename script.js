@@ -14,8 +14,11 @@ function render() {
     $('squares').textContent = `${squares.toFixed(1)} マス`;
     $('freeCoins').textContent = coins(counts.free * items.free.price);
     $('paidCoins').textContent = coins(counts.paid * items.paid.price + counts.ten * items.ten.price + counts.hundred * items.hundred.price);
-    const target = number('target'); const selected = items[$('type').value];
-    const need = Math.ceil(target / selected.ev);
+    const target = number('target');
+    const current = number('current');
+    const selected = items[$('type').value];
+    const remaining = Math.max(0, target - current);
+    const need = Math.ceil(remaining / selected.ev);
     $('needCount').textContent = `${integer(need)} ${selected.unit}`;
     $('needCoins').textContent = `${coins(need * selected.price)}(${selected.currency})`;
     $('expectedAtNeed').textContent = `${(need * selected.ev).toFixed(1)} マス`;
