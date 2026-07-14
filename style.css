@@ -33,6 +33,19 @@ main {
     padding: 48px 18px 64px;
 }
 
+.back-link {
+    display: inline-block;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    color: #75e5bd;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
 header {
     padding-top: 14px;
     padding-bottom: 18px;
@@ -80,6 +93,12 @@ h1 {
     }
 }
 
+h1.page-title {
+    color: var(--text);
+    background: none;
+    animation: none;
+}
+
 h2 {
     margin: 0 0 4px;
     font-size: 18px;
@@ -104,6 +123,10 @@ label {
     margin-bottom: 0;
     font-size: 14px;
     text-align: left;
+}
+
+.lead a {
+    color: #75e5bd;
 }
 
 .card {
@@ -263,6 +286,75 @@ select:focus {
     display: block;
     margin-bottom: 2px;
     color: var(--text);
+}
+
+.site-footer {
+    margin-top: 48px;
+    border-top: 1px solid var(--line);
+}
+
+.footer-inner {
+    width: min(900px, calc(100% - 36px));
+    margin: 0 auto;
+    padding: 28px 0 40px;
+}
+
+.footer-credit {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+#x-logo {
+    width: 24px;
+}
+
+.footer-social {
+    margin: 16px 0;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.footer-links a {
+    color: #75e5bd;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.privacy-content {
+    padding-top: 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+.privacy-content p {
+    margin: 0 0 12px;
+}
+
+.privacy-content h2 {
+    margin: 18px 0 4px;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.privacy-content a {
+    color: #75e5bd;
+}
+
+.privacy-updated {
+    margin-bottom: 0 !important;
+    color: #85838e;
 }
 
 @media (max-width: 650px) {
