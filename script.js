@@ -33,4 +33,7 @@ function render() {
 }
 document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', render));
 document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('focus', () => el.select()));
+document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('blur', () => {
+    if (el.value === '') el.value = 0;
+}));
 render();
