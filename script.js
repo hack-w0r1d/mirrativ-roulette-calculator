@@ -19,6 +19,8 @@ function render() {
     const selected = items[$('type').value];
     const remaining = Math.max(0, target - current);
     const need = Math.ceil(remaining / selected.ev);
+    $('needCountLabel').textContent = `${integer(remaining)}マス進むのに必要な個数の目安`;
+    $('needCoinsLabel').textContent = `${integer(remaining)}マス進むのに必要なコイン数の目安`;
     $('needCount').textContent = `${integer(need)} ${selected.unit}`;
     $('needCoins').textContent = `${coins(need * selected.price)}(${selected.currency})`;
     $('expectedAtNeed').textContent = `${(need * selected.ev).toFixed(1)} マス`;
@@ -30,4 +32,5 @@ function render() {
     }).join('');
 }
 document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', render));
+document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('focus', () => el.select()));
 render();
