@@ -13,30 +13,36 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mirrativ ルーレットギフト計算機</title>
+    <title>Mirrativ ルーレットギフト期待値計算ツール</title>
     <!-- 検索用説明文 -->
     <meta name="description" content="配信アプリ「Mirrativ」でルーレットギフトの進むマスの期待値を計算できる便利なツールです。">
     <!-- OGPタグ（SNSでシェアされたときの見た目用） -->
-    <meta property="og:title" content="Mirrativルーレットギフト計算機">
-    <meta property="og:description" content="ルーレットの進行マスの期待値などの目安を一目で確認！">
+    <meta property="og:title" content="Mirrativ ルーレットギフト期待値計算ツール">
+    <meta property="og:description" content="ルーレットギフトの期待値を簡単に確認！">
     <meta property="og:image" content="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/images/x-card.jpg">
     <meta property="og:url" content="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Mirrativルーレットギフト計算機">
-    <meta name="twitter:description" content="ライブ配信用テロップを誰でも簡単に作成できるWebツール">
+    <meta name="twitter:title" content="Mirrativ ルーレットギフト期待値計算ツール">
+    <meta name="twitter:description" content="ルーレットギフトの期待値を簡単に確認！">
     <meta name="twitter:image" content="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/images/x-card.jpg">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    <link rel="stylesheet" href="style.css?v=1.6.0">
+    <link rel="stylesheet" href="style.css?v=1.8.1">
     <link rel="apple-touch-icon" sizes="192x192" href="apple-touch-icon.jpg">
   </head>
   <body>
     <main>
       <header>
-        <h1>Mirrativ ルーレットギフト計算機</h1>
+        <h1>Mirrativ ルーレットギフト<br class="sp-only">期待値計算ツール</h1>
         <p class="lead">ルーレットの進行マスの期待値・消費コイン・目標までに必要なギフトの個数の目安を確認できます。</p>
       </header>
-      <section class="card">
+      <div class="tabs" role="tablist" aria-label="計算メニュー">
+        <button type="button" class="tab" id="tab-send" role="tab" aria-selected="true" aria-controls="panel-send" data-target="panel-send">個数から計算</button>
+        <button type="button" class="tab" id="tab-budget" role="tab" aria-selected="false" aria-controls="panel-budget" data-target="panel-budget" tabindex="-1">コインから計算</button>
+        <button type="button" class="tab" id="tab-target" role="tab" aria-selected="false" aria-controls="panel-target" data-target="panel-target" tabindex="-1">目標から逆算</button>
+        <button type="button" class="tab" id="tab-formula" role="tab" aria-selected="false" aria-controls="panel-formula" data-target="panel-formula" tabindex="-1">確率・期待値</button>
+      </div>
+      <section class="card panel" id="panel-send" role="tabpanel" aria-labelledby="tab-send" tabindex="0">
         <h2>送る個数から計算</h2>
         <p class="hint">送る予定の個数を入力してください。</p>
         <div class="grid">
@@ -72,7 +78,42 @@
           </div>
         </div>
       </section>
-      <section class="card">
+      <section class="card panel" id="panel-budget" role="tabpanel" aria-labelledby="tab-budget" tabindex="0" hidden>
+        <h2>使用可能なコインから計算</h2>
+        <p class="hint">使用できる無償コイン・有償コインの上限額を入力してください。</p>
+        <div class="grid two">
+          <div>
+            <label for="budgetFree">使用可能な無償コイン</label>
+            <input id="budgetFree" type="number" min="0" step="1" value="0">
+          </div>
+          <div>
+            <label for="budgetPaid">使用可能な有償コイン</label>
+            <input id="budgetPaid" type="number" min="0" step="1" value="0">
+          </div>
+        </div>
+        <div class="results">
+          <div class="result">
+            <span>期待される進行マス数(目安)</span>
+            <b id="budgetSquares">0.0 マス</b>
+          </div>
+        </div>
+        <table class="comparison">
+          <thead>
+            <tr>
+              <th>ギフト</th>
+              <th>送る個数</th>
+              <th>消費コイン</th>
+              <th>期待される進行マス数</th>
+            </tr>
+          </thead>
+          <tbody id="budgetComparison"></tbody>
+        </table>
+        <p class="note">
+          ※ 有償コインは有償ルーレットに使用する想定です。<br>
+          ※ 有償コインはコインあたりの期待値が高いギフト（有償10連・100連 &gt; 有償単発）から優先して使い切る組み合わせを想定して表示しています。
+        </p>
+      </section>
+      <section class="card panel" id="panel-target" role="tabpanel" aria-labelledby="tab-target" tabindex="0" hidden>
         <h2>目標マス数から逆算</h2>
         <p class="hint">期待値ベースで、目標に届く目安の個数を計算します。</p>
         <div class="grid two">
@@ -120,7 +161,7 @@
         </table>
         <p class="note">※ 確率に基づく期待値です。実際の進行マス数は出目によって前後するため、目標達成を保証する数値ではありません。</p>
       </section>
-      <section class="card">
+      <section class="card panel" id="panel-formula" role="tabpanel" aria-labelledby="tab-formula" tabindex="0" hidden>
         <h2>計算に使う確率・期待値</h2>
         <div class="formula">
           <div>
@@ -148,6 +189,6 @@
         </p>
       </div>
     </footer>
-  <script src="script.js?v=1.6.0"></script>
+  <script src="script.js?v=1.8.1"></script>
   </body>
 </html>

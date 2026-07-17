@@ -30,10 +30,58 @@ function render() {
 
         return `<tr class="${selectedClass}"><td>${item.name}</td><td>${integer(count)} ${item.unit}</td><td>${coins(count * item.price)}(${item.currency})</td></tr>`;
     }).join('');
+
+    const budgetFree = number('budgetFree');
+    const budgetPaid = number('budgetPaid');
+    const paidPriority = Object.entries(items)
+        .filter(([, item]) => item.currency === '有償')
+        .sort(([, a], [, b]) => (b.ev / b.price - a.ev / a.price) || (b.price - a.price))
+        .map(([key]) => key);
+    let remainingPaid = budgetPaid;
+    const paidCounts = {};
+    paidPriority.forEach(key => {
+        const item = items[key];
+        const count = Math.floor(remainingPaid / item.price);
+        paidCounts[key] = count;
+        remainingPaid -= count * item.price;
+    });
+    const budgetRows = Object.entries(items).map(([key, item]) => {
+        const count = item.currency === '無償' ? Math.floor(budgetFree / item.price) : paidCounts[key];
+        return { key, item, count, squares: count * item.ev, spent: count * item.price };
+    });
+    const totalSquares = budgetRows.reduce((sum, row) => sum + row.squares, 0);
+    $('budgetSquares').textContent = `${totalSquares.toFixed(1)} マス`;
+    $('budgetComparison').innerHTML = budgetRows.map(row => {
+        const selectedClass = row.count > 0 ? 'is-selected' : '';
+        return `<tr class="${selectedClass}"><td>${row.item.name}</td><td>${integer(row.count)} ${row.item.unit}</td><td>${coins(row.spent)}(${row.item.currency})</td><td>${row.squares.toFixed(1)} マス</td></tr>`;
+    }).join('');
+}
+
+function initTabs() {
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const activate = (tab, { focus = false } = {}) => {
+        tabs.forEach(t => {
+            const isActive = t === tab;
+            t.setAttribute('aria-selected', String(isActive));
+            t.tabIndex = isActive ? 0 : -1;
+            $(t.dataset.target).hidden = !isActive;
+        });
+        if (focus) tab.focus();
+    };
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', e => {
+            const dir = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+            if (!dir) return;
+            e.preventDefault();
+            activate(tabs[(index + dir + tabs.length) % tabs.length], { focus: true });
+        });
+    });
 }
 document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', render));
 document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('focus', () => el.select()));
 document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('blur', () => {
     if (el.value === '') el.value = 0;
 }));
+initTabs();
 render();
