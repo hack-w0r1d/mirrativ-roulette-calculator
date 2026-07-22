@@ -139,12 +139,25 @@ label {
   border-radius: 12px;
 }
 
+.fever-detail-link {
+  display: block;
+  margin-top: 16px;
+  margin-left: 10px;
+  color: #ffaf5b;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.fever-detail-link:hover {
+  text-decoration: underline;
+}
+
 .fever-bar {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  margin-top: 16px;
+  margin-top: 8px;
   background: var(--surface);
   border: 1px solid rgba(255, 149, 82, .3);
   border-radius: 12px;
@@ -345,7 +358,8 @@ select:focus {
   border-radius: 8px;
 }
 
-.result:first-child {
+.result:first-child,
+.result.is-highlight {
   border-color: rgba(229, 110, 219, .35);
   background: linear-gradient(135deg, rgba(229, 110, 219, .13), rgba(121, 156, 255, .09)), var(--surface-subtle);
 }
@@ -359,7 +373,8 @@ select:focus {
   color: var(--text);
 }
 
-.result:first-child b {
+.result:first-child b,
+.result.is-highlight b {
   color: transparent;
   background: linear-gradient(100deg, var(--pink-light), var(--blue));
   background-clip: text;
