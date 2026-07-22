@@ -36,15 +36,24 @@
         <h1>Mirrativ ルーレットギフト<br class="sp-only">期待値計算ツール</h1>
         <p class="lead">ルーレットの進行マスの期待値・消費コイン・目標までに必要なギフトの個数の目安を確認できます。</p>
       </header>
+      <div class="fever-bar" id="feverBar">
+        <span class="fever-tag">期間限定</span>
+        <span class="fever-bar-label">SUPER FEVER期待値計算</span>
+        <label class="fever-switch">
+          <input type="checkbox" id="feverEnabled">
+          <span class="fever-switch-track"><span class="fever-switch-thumb"></span></span>
+          <span class="fever-switch-state" id="feverState">OFF</span>
+        </label>
+      </div>
       <div class="tabs" role="tablist" aria-label="計算メニュー">
-        <button type="button" class="tab" id="tab-send" role="tab" aria-selected="true" aria-controls="panel-send" data-target="panel-send">個数から計算</button>
-        <button type="button" class="tab" id="tab-budget" role="tab" aria-selected="false" aria-controls="panel-budget" data-target="panel-budget" tabindex="-1">コインから計算</button>
-        <button type="button" class="tab" id="tab-target" role="tab" aria-selected="false" aria-controls="panel-target" data-target="panel-target" tabindex="-1">目標から逆算</button>
-        <button type="button" class="tab" id="tab-formula" role="tab" aria-selected="false" aria-controls="panel-formula" data-target="panel-formula" tabindex="-1">確率・期待値</button>
+        <button type="button" class="tab" id="tab-send" role="tab" aria-selected="true" aria-controls="panel-send" data-target="panel-send">送る個数から計算</button>
+        <button type="button" class="tab" id="tab-budget" role="tab" aria-selected="false" aria-controls="panel-budget" data-target="panel-budget" tabindex="-1">使用コインから計算</button>
+        <button type="button" class="tab" id="tab-target" role="tab" aria-selected="false" aria-controls="panel-target" data-target="panel-target" tabindex="-1">目標マス数から逆算</button>
+        <button type="button" class="tab" id="tab-formula formulaContent" role="tab" aria-selected="false" aria-controls="panel-formula" data-target="panel-formula" tabindex="-1">確率・期待値</button>
       </div>
       <section class="card panel" id="panel-send" role="tabpanel" aria-labelledby="tab-send" tabindex="0">
         <h2>送る個数から計算</h2>
-        <p class="hint">送る予定の個数を入力してください。</p>
+        <p class="hint">送る予定のルーレット個数を入力してください。</p>
         <div class="grid">
           <div>
             <label for="free">無償(100) / 個</label>
@@ -115,7 +124,7 @@
       </section>
       <section class="card panel" id="panel-target" role="tabpanel" aria-labelledby="tab-target" tabindex="0" hidden>
         <h2>目標マス数から逆算</h2>
-        <p class="hint">期待値ベースで、目標に届く目安の個数を計算します。</p>
+        <p class="hint">期待値ベースで、目標マス数に届く目安のルーレット個数を計算します。</p>
         <div class="grid two">
           <div>
             <label for="target">目標マス数</label>
@@ -163,7 +172,7 @@
       </section>
       <section class="card panel" id="panel-formula" role="tabpanel" aria-labelledby="tab-formula" tabindex="0" hidden>
         <h2>計算に使う確率・期待値</h2>
-        <div class="formula">
+        <div class="formula" id="formulaContent">
           <div>
             <strong>無償(100) / 有償(90)</strong>
             1マス: 40% / 2マス: 45% / 5マス: 10% / 10マス: 5%<br>期待値: 2.30 マス / 回
@@ -190,5 +199,6 @@
       </div>
     </footer>
   <script src="script.js?v=1.8.1"></script>
+  <script src="super-fever.js"></script>
   </body>
 </html>

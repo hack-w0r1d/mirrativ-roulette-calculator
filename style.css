@@ -139,6 +139,103 @@ label {
   border-radius: 12px;
 }
 
+.fever-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 149, 82, .3);
+  border-radius: 12px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.fever-bar.is-active {
+  border-color: rgba(255, 149, 52, .55);
+  box-shadow: 0 0 24px rgba(255, 149, 52, .12);
+}
+
+.fever-tag {
+  padding: 3px 8px;
+  background: linear-gradient(135deg, #ff9534, #ed4d72);
+  border-radius: 999px;
+  color: #0d0d10;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.fever-bar-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.fever-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.fever-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.fever-switch-track {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: #08080a;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: background .2s, border-color .2s;
+}
+
+.fever-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: transform .2s, background .2s;
+}
+
+.fever-switch input:checked + .fever-switch-track {
+  background: linear-gradient(135deg, #ff9534, #ed4d72);
+  border-color: transparent;
+}
+
+.fever-switch input:checked + .fever-switch-track .fever-switch-thumb {
+  background: #fff;
+  transform: translateX(18px);
+}
+
+.fever-switch input:focus-visible + .fever-switch-track {
+  box-shadow: 0 0 0 3px rgba(255, 149, 52, .3);
+}
+
+.fever-switch-state {
+  min-width: 28px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fever-bar.is-active .fever-switch-state {
+  color: #ffaf5b;
+}
+
 .tab {
   flex: 1 1 0;
   padding: 10px 8px;
