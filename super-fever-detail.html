@@ -27,7 +27,7 @@
     <meta name="twitter:description" content="SUPER FEVERを利用したほうがお得になる目安を期待値ベースで紹介！">
     <meta name="twitter:image" content="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/images/x-card.jpg">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    <link rel="stylesheet" href="style.css?v=1.8.1">
+    <link rel="stylesheet" href="style.css?v=1.9.0">
     <link rel="apple-touch-icon" sizes="192x192" href="apple-touch-icon.jpg">
   </head>
   <body>
@@ -40,19 +40,27 @@
       <section class="card">
         <h2>期待値ベースの目安</h2>
         <p class="hint">「通常時のみで投げ続けた場合」と「SUPER FEVERしてから投げた場合」で、同じ枚数のコインを使ったときの損益分岐点です。</p>
+        <label class="fever-subtoggle is-visible" id="excl100Toggle">
+          <span class="fever-subtoggle-label">100マスを除いた期待値で計算</span>
+          <span class="fever-switch">
+            <input type="checkbox" id="excl100Enabled">
+            <span class="fever-switch-track"><span class="fever-switch-thumb"></span></span>
+          </span>
+        </label>
         <div class="results">
-          <div class="result">
-            <span>無償ルーレットを送る場合</span>
+          <div class="result" id="resultFree">
+            <span>無償ルーレットのみを送る場合</span>
             <b>141個以上（14,100コイン）</b>
           </div>
-          <div class="result is-highlight">
+          <div class="result is-highlight" id="resultPaid">
             <span>有償ルーレットを送る場合</span>
             <b>有償10連2個 + 有償単発4個以上（2,360コイン）</b>
           </div>
         </div>
         <p class="note">
-          無償・有償ともに、SUPER FEVER(無償3000コイン)とは別に追加で送る個数の目安です。<br>
-          有償は有償10連を優先して使う組み合わせを想定しています。
+          ※ 無償・有償ともに、SUPER FEVER(無償3000コイン)とは別に追加で送る個数の目安です。<br>
+          ※ 有償は有償10連を優先して使う組み合わせを想定しています。<br>
+          ※ 「100マスを除いた期待値で計算」をONにすると、SUPER FEVER確率表にある100マス(0.5%)の当たり分を除いた期待値で目安を算出します。
         </p>
       </section>
       <section class="card privacy-content">
@@ -73,5 +81,28 @@
         </p>
       </div>
     </footer>
+    <script>
+      (function () {
+        const values = {
+          off: {
+            free: '141個以上',
+            paid: '有償10連2個+有償単発4個以上'
+          },
+          on: {
+            free: '発動しないほうがいい',
+            paid: '有償10連3個以上'
+          }
+        };
+        const toggle = document.getElementById('excl100Enabled');
+        const freeEl = document.querySelector('#resultFree b');
+        const paidEl = document.querySelector('#resultPaid b');
+        if (!toggle || !freeEl || !paidEl) return;
+        toggle.addEventListener('change', () => {
+          const mode = toggle.checked ? 'on' : 'off';
+          freeEl.textContent = values[mode].free;
+          paidEl.textContent = values[mode].paid;
+        });
+      })();
+    </script>
   </body>
 </html>

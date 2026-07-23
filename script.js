@@ -14,10 +14,16 @@ window.setFeverActive = active => {
     feverActive = active;
     render();
 };
-const evOf = key => (feverActive && window.feverEv) ? window.feverEv[key] : items[key].ev;
+const evOf = (key, panel) => {
+    if (!feverActive) return items[key].ev;
+    if (panel && window.feverExcl100Panels && window.feverExcl100Panels[panel] && window.feverEvExcl100) {
+        return window.feverEvExcl100[key];
+    }
+    return window.feverEv ? window.feverEv[key] : items[key].ev;
+};
 function render() {
     const counts = Object.fromEntries(Object.keys(items).map(key => [key, number(key)]));
-    const squares = Object.keys(items).reduce((sum, key) => sum + counts[key] * evOf(key), 0);
+    const squares = Object.keys(items).reduce((sum, key) => sum + counts[key] * evOf(key, 'send'), 0);
     $('squares').textContent = `${squares.toFixed(1)} マス`;
     $('freeCoins').textContent = coins(counts.free * items.free.price);
     $('paidCoins').textContent = coins(counts.paid * items.paid.price + counts.ten * items.ten.price + counts.hundred * items.hundred.price);
@@ -26,14 +32,14 @@ function render() {
     const selectedKey = $('type').value;
     const selected = items[selectedKey];
     const remaining = Math.max(0, target - current);
-    const need = Math.ceil(remaining / evOf(selectedKey));
+    const need = Math.ceil(remaining / evOf(selectedKey, 'target'));
     $('needCountLabel').textContent = `${integer(remaining)}マス進むのに必要な個数の目安`;
     $('needCoinsLabel').textContent = `${integer(remaining)}マス進むのに必要なコイン数の目安`;
     $('needCount').textContent = `${integer(need)} ${selected.unit}`;
     $('needCoins').textContent = `${coins(need * selected.price)}(${selected.currency})`;
-    $('expectedAtNeed').textContent = `${(need * evOf(selectedKey)).toFixed(1)} マス`;
+    $('expectedAtNeed').textContent = `${(need * evOf(selectedKey, 'target')).toFixed(1)} マス`;
     $('comparison').innerHTML = Object.entries(items).map(([key, item]) => {
-        const count = Math.ceil(target / evOf(key));
+        const count = Math.ceil(target / evOf(key, 'target'));
         const selectedClass = key === selectedKey ? 'is-selected' : '';
 
         return `<tr class="${selectedClass}"><td>${item.name}</td><td>${integer(count)} ${item.unit}</td><td>${coins(count * item.price)}(${item.currency})</td></tr>`;
@@ -43,7 +49,7 @@ function render() {
     const budgetPaid = number('budgetPaid');
     const paidPriority = Object.entries(items)
         .filter(([, item]) => item.currency === '有償')
-        .sort(([keyA, a], [keyB, b]) => (evOf(keyB) / b.price - evOf(keyA) / a.price) || (b.price - a.price))
+        .sort(([keyA, a], [keyB, b]) => (evOf(keyB, 'budget') / b.price - evOf(keyA, 'budget') / a.price) || (b.price - a.price))
         .map(([key]) => key);
     let remainingPaid = budgetPaid;
     const paidCounts = {};
@@ -55,7 +61,7 @@ function render() {
     });
     const budgetRows = Object.entries(items).map(([key, item]) => {
         const count = item.currency === '無償' ? Math.floor(budgetFree / item.price) : paidCounts[key];
-        return { key, item, count, squares: count * evOf(key), spent: count * item.price };
+        return { key, item, count, squares: count * evOf(key, 'budget'), spent: count * item.price };
     });
     const totalSquares = budgetRows.reduce((sum, row) => sum + row.squares, 0);
     $('budgetSquares').textContent = `${totalSquares.toFixed(1)} マス`;
