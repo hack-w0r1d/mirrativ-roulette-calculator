@@ -86,10 +86,53 @@ function initTabs() {
         });
     });
 }
+function initTitleSpin() {
+    const title = document.querySelector('header h1:not(.page-title)');
+    if (!title) return;
+    const duration = 3900;
+    const fadeDuration = 1200;
+    const turns = 1;
+    const wedge = 22.5;
+    const baseColors = ['#ff2e43', '#ffce33'];
+    const targetColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f7f5f8';
+    const hexToRgb = hex => {
+        const n = parseInt(hex.replace('#', ''), 16);
+        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    };
+    const targetRgb = hexToRgb(targetColor);
+    const wedgeRgb = baseColors.map(hexToRgb);
+    const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+    const mix = (rgb, t) => `rgb(${lerp(rgb[0], targetRgb[0], t)}, ${lerp(rgb[1], targetRgb[1], t)}, ${lerp(rgb[2], targetRgb[2], t)})`;
+    title.style.color = 'transparent';
+    title.style.backgroundClip = 'text';
+    title.style.webkitBackgroundClip = 'text';
+    const start = performance.now();
+    function frame(now) {
+        const elapsed = now - start;
+        const progress = Math.min(1, elapsed / duration);
+        const angle = progress * 360 * turns;
+        const fadeProgress = Math.max(0, Math.min(1, (elapsed - (duration - fadeDuration)) / fadeDuration));
+        const stops = Array.from({ length: 360 / wedge }, (_, i) => {
+            const color = mix(wedgeRgb[i % 2], fadeProgress);
+            return `${color} ${i * wedge}deg ${(i + 1) * wedge}deg`;
+        }).join(', ');
+        title.style.background = `conic-gradient(from ${angle}deg, ${stops})`;
+        if (progress < 1) {
+            requestAnimationFrame(frame);
+        } else {
+            title.style.background = '';
+            title.style.color = '';
+            title.style.backgroundClip = '';
+            title.style.webkitBackgroundClip = '';
+        }
+    }
+    requestAnimationFrame(frame);
+}
 document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', render));
 document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('focus', () => el.select()));
 document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('blur', () => {
     if (el.value === '') el.value = 0;
 }));
 initTabs();
+initTitleSpin();
 render();

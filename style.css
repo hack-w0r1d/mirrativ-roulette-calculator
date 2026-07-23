@@ -58,45 +58,11 @@ h1 {
   margin: 0 0 12px;
   font-size: clamp(26px, 5vw, 36px);
   letter-spacing: -.03em;
-  color: transparent;
-  background: linear-gradient(
-    90deg,
-    var(--text) 0%,
-    var(--text) 33%,
-    #35b998 40%,
-    #65e6b5 45%,
-    #d0ffe4 50%,
-    #5de0c7 55%,
-    #249c9b 60%,
-    var(--text) 67%,
-    var(--text) 100%
-  );
-  background-size: 300% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: h1-emerald-shine 4.8s ease-out forwards;
-}
-
-@keyframes h1-emerald-shine {
-  0% {
-    background-position: 100% 0;
-    text-shadow: 0 0 2px rgba(79, 230, 177, .2), 0 0 6px rgba(54, 185, 185, .12);
-  }
-
-  50% {
-    text-shadow: 0 0 10px rgba(79, 230, 177, .75), 0 0 26px rgba(54, 185, 185, .5), 0 0 42px rgba(31, 144, 127, .3);
-  }
-
-  100% {
-    background-position: 0 0;
-    text-shadow: none;
-  }
+  color: var(--text);
 }
 
 h1.page-title {
   color: var(--text);
-  background: none;
-  animation: none;
 }
 
 h2 {
