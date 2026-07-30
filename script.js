@@ -29,19 +29,54 @@ function render() {
     $('paidCoins').textContent = coins(counts.paid * items.paid.price + counts.ten * items.ten.price + counts.hundred * items.hundred.price);
     const target = number('target');
     const current = number('current');
-    const selectedKey = $('type').value;
-    const selected = items[selectedKey];
+    const coinType = $('type').value;
     const remaining = Math.max(0, target - current);
-    const need = Math.ceil(remaining / evOf(selectedKey, 'target'));
-    $('needCountLabel').textContent = `${integer(remaining)}マス進むのに必要な個数の目安`;
+    const targetCounts = coinType === 'free'
+        ? { free: remaining > 0 ? Math.ceil(remaining / evOf('free', 'target')) : 0, hundred: 0, ten: 0, paid: 0 }
+        : (() => {
+            let r = remaining;
+            let hundred = Math.floor(r / evOf('hundred', 'target'));
+            r -= hundred * evOf('hundred', 'target');
+            let ten = Math.floor(r / evOf('ten', 'target'));
+            r -= ten * evOf('ten', 'target');
+            let paid = r > 0 ? Math.ceil(r / evOf('paid', 'target')) : 0;
+            // 有償(90)の消費コインが有償10連1個分以上になる場合は有償10連へ置き換える
+            if (paid * items.paid.price >= items.ten.price) {
+                ten += 1;
+                paid = 0;
+            }
+            // 置き換えにより有償10連が10個(=有償100連1個分)に達した場合は有償100連へまとめる
+            if (ten * items.ten.price >= items.hundred.price) {
+                hundred += 1;
+                ten -= 10;
+            }
+            return { free: 0, hundred, ten, paid };
+        })();
+    const currencyLabel = coinType === 'free' ? '無償' : '有償';
+    const targetRows = [
+        { key: 'free', resultId: 'result-free', valueId: 'needFree' },
+        { key: 'paid', resultId: 'result-paid', valueId: 'needPaid' },
+        { key: 'ten', resultId: 'result-ten', valueId: 'needTen' },
+        { key: 'hundred', resultId: 'result-hundred', valueId: 'needHundred' },
+    ];
+    let targetCoins = 0;
+    let targetSquares = 0;
+    targetRows.forEach(({ key, resultId, valueId }) => {
+        const count = targetCounts[key];
+        const el = $(resultId);
+        el.hidden = count <= 0;
+        el.classList.toggle('is-highlight', count > 0);
+        $(valueId).textContent = `${integer(count)} 個`;
+        targetCoins += count * items[key].price;
+        targetSquares += count * evOf(key, 'target');
+    });
     $('needCoinsLabel').textContent = `${integer(remaining)}マス進むのに必要なコイン数の目安`;
-    $('needCount').textContent = `${integer(need)} ${selected.unit}`;
-    $('needCoins').textContent = `${coins(need * selected.price)}(${selected.currency})`;
-    $('expectedAtNeed').textContent = `${(need * evOf(selectedKey, 'target')).toFixed(1)} マス`;
-    $('comparison').innerHTML = Object.entries(items).map(([key, item]) => {
-        const count = Math.ceil(target / evOf(key, 'target'));
-        const selectedClass = key === selectedKey ? 'is-selected' : '';
-
+    $('needCoins').textContent = `${coins(targetCoins)}(${currencyLabel})`;
+    $('expectedAtNeed').textContent = `${targetSquares.toFixed(1)} マス`;
+    $('comparison').innerHTML = targetRows.map(({ key }) => {
+        const item = items[key];
+        const count = targetCounts[key];
+        const selectedClass = count > 0 ? 'is-selected' : '';
         return `<tr class="${selectedClass}"><td>${item.name}</td><td>${integer(count)} ${item.unit}</td><td>${coins(count * item.price)}(${item.currency})</td></tr>`;
     }).join('');
 

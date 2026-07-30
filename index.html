@@ -27,7 +27,7 @@
     <meta name="twitter:description" content="ルーレットギフトの期待値を簡単に確認！">
     <meta name="twitter:image" content="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/images/x-card.jpg">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    <link rel="stylesheet" href="style.css?v=2.1.0">
+    <link rel="stylesheet" href="style.css?v=2.2.0">
     <link rel="apple-touch-icon" sizes="192x192" href="apple-touch-icon.jpg">
   </head>
   <body>
@@ -136,19 +136,29 @@
             <input id="current" type="number" min="0" step="1" value="0">
           </div>
           <div>
-            <label for="type">使用するギフト(種類)</label>
+            <label for="type">使用するコイン(種類)</label>
             <select id="type">
-              <option value="free">無償ルーレット(100)</option>
-              <option value="paid">有償ルーレット(90)</option>
-              <option value="ten">有償10連ルーレット(1000)</option>
-              <option value="hundred">有償100連ルーレット(10000)</option>
+              <option value="free">無償コイン</option>
+              <option value="paid">有償コイン</option>
             </select>
           </div>
         </div>
         <div class="results">
-          <div class="result">
-            <span id="needCountLabel">必要な個数の目安</span>
-            <b id="needCount">0</b>
+          <div class="result" id="result-free" hidden>
+            <span>無償ルーレット(100)の個数の目安</span>
+            <b id="needFree">0 個</b>
+          </div>
+          <div class="result" id="result-hundred" hidden>
+            <span>有償100連ルーレット(10,000)の個数の目安</span>
+            <b id="needHundred">0 個</b>
+          </div>
+          <div class="result" id="result-ten" hidden>
+            <span>有償10連ルーレット(1,000)の個数の目安</span>
+            <b id="needTen">0 個</b>
+          </div>
+          <div class="result" id="result-paid" hidden>
+            <span>有償ルーレット(90)の個数の目安</span>
+            <b id="needPaid">0 個</b>
           </div>
           <div class="result">
             <span id="needCoinsLabel">必要なコイン数の目安</span>
@@ -199,7 +209,7 @@
         </p>
       </div>
     </footer>
-  <script src="script.js?v=2.1.0"></script>
-  <script src="super-fever.js?v=2.1.0"></script>
+  <script src="script.js?v=2.2.0"></script>
+  <script src="super-fever.js?v=2.2.0"></script>
   </body>
 </html>
