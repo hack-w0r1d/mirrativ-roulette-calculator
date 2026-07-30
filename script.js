@@ -1,13 +1,14 @@
 const items = {
     free: { name:'無償(100)', ev:2.3, price:100, unit:'個', currency:'無償' },
     paid: { name:'有償(90)', ev:2.3, price:90, unit:'個', currency:'有償' },
-    ten: { name:'有償10連(1000)', ev:29.5, price:1000, unit:'個', currency:'有償' },
-    hundred: { name:'有償100連(10000)', ev:295, price:10000, unit:'個', currency:'有償' }
+    ten: { name:'有償10連(1,000)', ev:29.5, price:1000, unit:'個', currency:'有償' },
+    hundred: { name:'有償100連(10,000)', ev:295, price:10000, unit:'個', currency:'有償' }
 };
 const $ = id => document.getElementById(id);
 const number = id => Math.max(0, Number($(id).value) || 0);
 const integer = n => Math.ceil(n).toLocaleString('ja-JP');
 const coins = n => `${integer(n)} コイン`;
+const squaresText = n => `${n === 0 ? '0' : n.toFixed(1)} マス`;
 
 let feverActive = false;
 window.setFeverActive = active => {
@@ -24,7 +25,7 @@ const evOf = (key, panel) => {
 function render() {
     const counts = Object.fromEntries(Object.keys(items).map(key => [key, number(key)]));
     const squares = Object.keys(items).reduce((sum, key) => sum + counts[key] * evOf(key, 'send'), 0);
-    $('squares').textContent = `${squares.toFixed(1)} マス`;
+    $('squares').textContent = squaresText(squares);
     $('freeCoins').textContent = coins(counts.free * items.free.price);
     $('paidCoins').textContent = coins(counts.paid * items.paid.price + counts.ten * items.ten.price + counts.hundred * items.hundred.price);
     const target = number('target');
@@ -72,7 +73,7 @@ function render() {
     });
     $('needCoinsLabel').textContent = `${integer(remaining)}マス進むのに必要なコイン数の目安`;
     $('needCoins').textContent = `${coins(targetCoins)}(${currencyLabel})`;
-    $('expectedAtNeed').textContent = `${targetSquares.toFixed(1)} マス`;
+    $('expectedAtNeed').textContent = squaresText(targetSquares);
     $('comparison').innerHTML = targetRows.map(({ key }) => {
         const item = items[key];
         const count = targetCounts[key];
@@ -99,7 +100,7 @@ function render() {
         return { key, item, count, squares: count * evOf(key, 'budget'), spent: count * item.price };
     });
     const totalSquares = budgetRows.reduce((sum, row) => sum + row.squares, 0);
-    $('budgetSquares').textContent = `${totalSquares.toFixed(1)} マス`;
+    $('budgetSquares').textContent = squaresText(totalSquares);
     $('budgetComparison').innerHTML = budgetRows.map(row => {
         const selectedClass = row.count > 0 ? 'is-selected' : '';
         return `<tr class="${selectedClass}"><td>${row.item.name}</td><td>${integer(row.count)} ${row.item.unit}</td><td>${coins(row.spent)}(${row.item.currency})</td><td>${row.squares.toFixed(1)} マス</td></tr>`;
