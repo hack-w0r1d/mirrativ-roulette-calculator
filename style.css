@@ -37,7 +37,7 @@ main {
   display: block;
   width: fit-content;
   margin: 20px 20px 0 auto;
-  color: #75e5bd;
+  color: #ffaf5b;
   font-size: 13px;
   text-decoration: none;
 }
@@ -89,10 +89,6 @@ label {
   margin-bottom: 0;
   font-size: 14px;
   text-align: left;
-}
-
-.lead a {
-  color: #75e5bd;
 }
 
 .tabs {
@@ -422,6 +418,11 @@ select:focus {
   font-size: 12px;
 }
 
+.note a {
+  color: var(--muted);
+  text-decoration: underline;
+}
+
 .formula {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -474,7 +475,7 @@ select:focus {
 }
 
 .footer-links a {
-  color: #75e5bd;
+  color: #ffaf5b;
   font-size: 12px;
   text-decoration: none;
 }
@@ -491,7 +492,7 @@ select:focus {
 }
 
 .privacy-content p {
-  margin: 0 0 12px;
+  margin: 0;
 }
 
 .privacy-content h2 {
@@ -501,10 +502,11 @@ select:focus {
 }
 
 .privacy-content a {
-  color: #75e5bd;
+  color: #ffaf5b;
 }
 
 .privacy-updated {
+  margin-top: 10px !important;
   margin-bottom: 0 !important;
   color: #85838e;
 }

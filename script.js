@@ -22,6 +22,28 @@ const evOf = (key, panel) => {
     }
     return window.feverEv ? window.feverEv[key] : items[key].ev;
 };
+function computeGiftCounts(remaining, coinType, panel) {
+    if (coinType === 'free') {
+        return { free: remaining > 0 ? Math.ceil(remaining / evOf('free', panel)) : 0, hundred: 0, ten: 0, paid: 0 };
+    }
+    let r = remaining;
+    let hundred = Math.floor(r / evOf('hundred', panel));
+    r -= hundred * evOf('hundred', panel);
+    let ten = Math.floor(r / evOf('ten', panel));
+    r -= ten * evOf('ten', panel);
+    let paid = r > 0 ? Math.ceil(r / evOf('paid', panel)) : 0;
+    // 有償(90)の消費コインが有償10連1個分以上になる場合は有償10連へ置き換える
+    if (paid * items.paid.price >= items.ten.price) {
+        ten += 1;
+        paid = 0;
+    }
+    // 置き換えにより有償10連が10個(=有償100連1個分)に達した場合は有償100連へまとめる
+    if (ten * items.ten.price >= items.hundred.price) {
+        hundred += 1;
+        ten -= 10;
+    }
+    return { free: 0, hundred, ten, paid };
+}
 function render() {
     const counts = Object.fromEntries(Object.keys(items).map(key => [key, number(key)]));
     const squares = Object.keys(items).reduce((sum, key) => sum + counts[key] * evOf(key, 'send'), 0);
@@ -32,27 +54,7 @@ function render() {
     const current = number('current');
     const coinType = $('type').value;
     const remaining = Math.max(0, target - current);
-    const targetCounts = coinType === 'free'
-        ? { free: remaining > 0 ? Math.ceil(remaining / evOf('free', 'target')) : 0, hundred: 0, ten: 0, paid: 0 }
-        : (() => {
-            let r = remaining;
-            let hundred = Math.floor(r / evOf('hundred', 'target'));
-            r -= hundred * evOf('hundred', 'target');
-            let ten = Math.floor(r / evOf('ten', 'target'));
-            r -= ten * evOf('ten', 'target');
-            let paid = r > 0 ? Math.ceil(r / evOf('paid', 'target')) : 0;
-            // 有償(90)の消費コインが有償10連1個分以上になる場合は有償10連へ置き換える
-            if (paid * items.paid.price >= items.ten.price) {
-                ten += 1;
-                paid = 0;
-            }
-            // 置き換えにより有償10連が10個(=有償100連1個分)に達した場合は有償100連へまとめる
-            if (ten * items.ten.price >= items.hundred.price) {
-                hundred += 1;
-                ten -= 10;
-            }
-            return { free: 0, hundred, ten, paid };
-        })();
+    const targetCounts = computeGiftCounts(remaining, coinType, 'target');
     const currencyLabel = coinType === 'free' ? '無償' : '有償';
     const targetRows = [
         { key: 'free', resultId: 'result-free', valueId: 'needFree' },
@@ -77,6 +79,35 @@ function render() {
     $('comparison').innerHTML = targetRows.map(({ key }) => {
         const item = items[key];
         const count = targetCounts[key];
+        const selectedClass = count > 0 ? 'is-selected' : '';
+        return `<tr class="${selectedClass}"><td>${item.name}</td><td>${integer(count)} ${item.unit}</td><td>${coins(count * item.price)}(${item.currency})</td></tr>`;
+    }).join('');
+
+    const laps = number('laps');
+    const lapsType = $('lapsType').value;
+    const lapsRemaining = laps * 65;
+    const lapsCounts = computeGiftCounts(lapsRemaining, lapsType, 'laps');
+    const lapsCurrencyLabel = lapsType === 'free' ? '無償' : '有償';
+    const lapsRows = [
+        { key: 'free', resultId: 'laps-result-free', valueId: 'lapsNeedFree' },
+        { key: 'paid', resultId: 'laps-result-paid', valueId: 'lapsNeedPaid' },
+        { key: 'ten', resultId: 'laps-result-ten', valueId: 'lapsNeedTen' },
+        { key: 'hundred', resultId: 'laps-result-hundred', valueId: 'lapsNeedHundred' }
+    ];
+    let lapsCoins = 0;
+    lapsRows.forEach(({ key, resultId, valueId }) => {
+        const count = lapsCounts[key];
+        const el = $(resultId);
+        el.hidden = count <= 0;
+        el.classList.toggle('is-highlight', count > 0);
+        $(valueId).textContent = `${integer(count)} 個`;
+        lapsCoins += count * items[key].price;
+    });
+    $('lapsNeedCoinsLabel').textContent = `${integer(laps)}周するのに必要なコイン数の目安`;
+    $('lapsNeedCoins').textContent = `${coins(lapsCoins)}(${lapsCurrencyLabel})`;
+    $('lapsComparison').innerHTML = lapsRows.map(({ key }) => {
+        const item = items[key];
+        const count = lapsCounts[key];
         const selectedClass = count > 0 ? 'is-selected' : '';
         return `<tr class="${selectedClass}"><td>${item.name}</td><td>${integer(count)} ${item.unit}</td><td>${coins(count * item.price)}(${item.currency})</td></tr>`;
     }).join('');
@@ -176,5 +207,6 @@ document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListe
     if (el.value === '') el.value = 0;
 }));
 initTabs();
+$('formula-link')?.addEventListener('click', e => { e.preventDefault(); $('tab-formula').click(); });
 initTitleSpin();
 render();
