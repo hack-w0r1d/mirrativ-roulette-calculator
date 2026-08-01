@@ -20,7 +20,7 @@
     hundred: 585.4271
   };
   window.feverEvExcl100 = feverEvExcl100;
-  window.feverExcl100Panels = { send: false, budget: false, target: false };
+  window.feverExcl100Panels = { send: false, budget: false, target: false, laps: false };
 
   const formulaDefault = `
     <div>
@@ -79,7 +79,8 @@
     [
       { id: 'panel-send', panel: 'send' },
       { id: 'panel-budget', panel: 'budget' },
-      { id: 'panel-target', panel: 'target' }
+      { id: 'panel-target', panel: 'target' },
+      { id: 'panel-laps', panel: 'laps' }
     ].forEach(({ id, panel }) => {
       const section = document.getElementById(id);
       const hint = section && section.querySelector('.hint');
