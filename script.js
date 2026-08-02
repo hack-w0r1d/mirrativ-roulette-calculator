@@ -44,6 +44,17 @@ function computeGiftCounts(remaining, coinType, panel) {
     }
     return { free: 0, hundred, ten, paid };
 }
+const tableBaseOrder = ['free', 'paid', 'ten', 'hundred'];
+const tableHighlightPriority = ['hundred', 'ten', 'paid', 'free'];
+function sortForTable(rows, counts) {
+    return rows.slice().sort((a, b) => {
+        const highlightedA = counts[a.key] > 0;
+        const highlightedB = counts[b.key] > 0;
+        if (highlightedA !== highlightedB) return highlightedA ? -1 : 1;
+        const order = highlightedA ? tableHighlightPriority : tableBaseOrder;
+        return order.indexOf(a.key) - order.indexOf(b.key);
+    });
+}
 function render() {
     const counts = Object.fromEntries(Object.keys(items).map(key => [key, number(key)]));
     const squares = Object.keys(items).reduce((sum, key) => sum + counts[key] * evOf(key, 'send'), 0);
@@ -76,7 +87,7 @@ function render() {
     $('needCoinsLabel').textContent = `${integer(remaining)}マス進むのに必要なコイン数の目安`;
     $('needCoins').textContent = `${coins(targetCoins)}(${currencyLabel})`;
     $('expectedAtNeed').textContent = squaresText(targetSquares);
-    $('comparison').innerHTML = targetRows.map(({ key }) => {
+    $('comparison').innerHTML = sortForTable(targetRows, targetCounts).map(({ key }) => {
         const item = items[key];
         const count = targetCounts[key];
         const selectedClass = count > 0 ? 'is-selected' : '';
@@ -90,9 +101,9 @@ function render() {
     const lapsCurrencyLabel = lapsType === 'free' ? '無償' : '有償';
     const lapsRows = [
         { key: 'free', resultId: 'laps-result-free', valueId: 'lapsNeedFree' },
-        { key: 'paid', resultId: 'laps-result-paid', valueId: 'lapsNeedPaid' },
+        { key: 'hundred', resultId: 'laps-result-hundred', valueId: 'lapsNeedHundred' },
         { key: 'ten', resultId: 'laps-result-ten', valueId: 'lapsNeedTen' },
-        { key: 'hundred', resultId: 'laps-result-hundred', valueId: 'lapsNeedHundred' }
+        { key: 'paid', resultId: 'laps-result-paid', valueId: 'lapsNeedPaid' }
     ];
     let lapsCoins = 0;
     lapsRows.forEach(({ key, resultId, valueId }) => {
@@ -105,7 +116,7 @@ function render() {
     });
     $('lapsNeedCoinsLabel').textContent = `${integer(laps)}周するのに必要なコイン数の目安`;
     $('lapsNeedCoins').textContent = `${coins(lapsCoins)}(${lapsCurrencyLabel})`;
-    $('lapsComparison').innerHTML = lapsRows.map(({ key }) => {
+    $('lapsComparison').innerHTML = sortForTable(lapsRows, lapsCounts).map(({ key }) => {
         const item = items[key];
         const count = lapsCounts[key];
         const selectedClass = count > 0 ? 'is-selected' : '';
@@ -132,7 +143,8 @@ function render() {
     });
     const totalSquares = budgetRows.reduce((sum, row) => sum + row.squares, 0);
     $('budgetSquares').textContent = squaresText(totalSquares);
-    $('budgetComparison').innerHTML = budgetRows.map(row => {
+    const budgetCounts = Object.fromEntries(budgetRows.map(row => [row.key, row.count]));
+    $('budgetComparison').innerHTML = sortForTable(budgetRows, budgetCounts).map(row => {
         const selectedClass = row.count > 0 ? 'is-selected' : '';
         return `<tr class="${selectedClass}"><td>${row.item.name}</td><td>${integer(row.count)} ${row.item.unit}</td><td>${coins(row.spent)}(${row.item.currency})</td><td>${row.squares.toFixed(1)} マス</td></tr>`;
     }).join('');
