@@ -465,6 +465,7 @@ select:focus {
 
 .footer-social {
   margin: 16px 0;
+  padding-top: 7px;
   text-align: center;
 }
 
